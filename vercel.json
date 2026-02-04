@@ -1,0 +1,15 @@
+{
+  "outputDirectory": "dist",
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/api"
+    }
+  ],
+  "functions": {
+    "api/index.ts": {
+      "maxDuration": 800
+    }
+  },
+  "fluid": true
+}

@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "runware": {
+      "command": "node",
+      "args": ["/absolute/path/to/mcp-runware/dist/index.js"],
+      "env": {
+        "RUNWARE_API_KEY": "your-api-key-here"
+      }
+    }
+  }
+}
