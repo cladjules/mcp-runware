@@ -31,7 +31,7 @@ export class RunwareClient {
     if (!this.connected) {
       await this.runware.ensureConnection();
       this.connected = true;
-      console.error("[Runware] Connected successfully");
+      console.log("[Runware] Connected successfully");
     }
   }
 

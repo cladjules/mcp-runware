@@ -1,0 +1,370 @@
+{
+  "source": "https://runware.ai/models",
+  "collection": "Popular Models",
+  "date_extracted": "2026-02-05",
+  "total_models": 18,
+  "models": [
+    {
+      "name": "ImagineArt 1.5 Pro",
+      "creator": "ImagineArt",
+      "air": "imagineart:1.5-pro@0",
+      "category": "checkpoint",
+      "type": "base",
+      "architecture": "imagineart_1_5_pro",
+      "tags": [
+        "imagineart",
+        "image-generation",
+        "text-to-image",
+        "4k",
+        "native-resolution",
+        "realism",
+        "visual-composition",
+        "text-rendering",
+        "professional",
+        "commercial"
+      ],
+      "price_usd": 0.045,
+      "price_configuration": "4K"
+    },
+    {
+      "name": "Qwen-Image-2512",
+      "creator": "Alibaba",
+      "air": "alibaba:qwen-image@2512",
+      "category": "checkpoint",
+      "type": "base",
+      "architecture": "qwen_image",
+      "tags": [
+        "qwen-image",
+        "image-generation",
+        "text-to-image",
+        "image-to-image",
+        "prompt-adherence",
+        "text-rendering",
+        "realistic",
+        "high-fidelity",
+        "alibaba",
+        "open-source"
+      ],
+      "price_usd": 0.0051,
+      "price_configuration": "1024x1024",
+      "price_discount": "Save 74%"
+    },
+    {
+      "name": "Seedream 4.5",
+      "creator": "ByteDance",
+      "air": "bytedance:seedream@4.5",
+      "category": "checkpoint",
+      "type": "base",
+      "architecture": "seedream_4_5",
+      "tags": [
+        "seedream",
+        "precision",
+        "production",
+        "multi-image",
+        "reference-control",
+        "4K",
+        "text-rendering",
+        "character-consistency",
+        "fine-detail",
+        "stable-output"
+      ],
+      "price_usd": 0.015,
+      "price_configuration": "1024x1024"
+    },
+    {
+      "name": "FLUX.2 [klein] 9B",
+      "creator": "Black Forest Labs",
+      "air": "runware:400@2",
+      "category": "checkpoint",
+      "type": "base",
+      "architecture": "flux2klein_9b",
+      "tags": [
+        "flux2",
+        "klein",
+        "9B",
+        "image-generation"
+      ],
+      "price_usd": 0.00078,
+      "price_configuration": "1024x1024 · 4 steps",
+      "price_discount": "Save 87%"
+    },
+    {
+      "name": "FLUX.2 [klein] 4B",
+      "creator": "Black Forest Labs",
+      "air": "runware:400@4",
+      "category": "checkpoint",
+      "type": "base",
+      "architecture": "flux2klein_4b",
+      "tags": [
+        "flux",
+        "flux-2",
+        "klein",
+        "4b",
+        "image-generation",
+        "image-editing",
+        "text-to-image",
+        "ultra-fast",
+        "real-time",
+        "distilled",
+        "black-forest-labs"
+      ],
+      "price_usd": 0.0006,
+      "price_configuration": "1024x1024",
+      "price_discount": "Save 40%"
+    },
+    {
+      "name": "Kling IMAGE O1",
+      "creator": "Kling AI",
+      "air": "klingai:kling-image@o1",
+      "category": "checkpoint",
+      "type": "base",
+      "architecture": "kling_image_o1",
+      "tags": [
+        "image-generation",
+        "kling",
+        "editing",
+        "stylization",
+        "precision",
+        "character-consistency",
+        "high-control"
+      ]
+    },
+    {
+      "name": "Z-Image-Turbo",
+      "creator": "Alibaba",
+      "air": "runware:z-image@turbo",
+      "category": "checkpoint",
+      "type": "base",
+      "architecture": "z_image_turbo",
+      "tags": [
+        "z-image",
+        "turbo",
+        "photorealistic",
+        "bilingual-text",
+        "fast",
+        "efficient",
+        "reasoning",
+        "commercial"
+      ],
+      "price_usd": 0.0006,
+      "price_configuration": "1024x1024 · 4 steps"
+    },
+    {
+      "name": "Qwen-Image-Edit-Plus",
+      "creator": "Alibaba",
+      "air": "runware:108@22",
+      "category": "checkpoint",
+      "type": "base",
+      "architecture": "qwen_image_edit_plus",
+      "tags": [
+        "qwen",
+        "image-edit",
+        "multi-image",
+        "controlnet",
+        "text-editing",
+        "consistency"
+      ],
+      "price_usd": 0.012,
+      "price_configuration": "1024x1024"
+    },
+    {
+      "name": "FLUX.2 [dev]",
+      "creator": "Black Forest Labs",
+      "air": "runware:400@1",
+      "category": "checkpoint",
+      "type": "base",
+      "architecture": "flux_2_dev",
+      "tags": [
+        "flux2",
+        "dev",
+        "research",
+        "multi-conditioning",
+        "editing",
+        "testing",
+        "control"
+      ],
+      "price_usd": 0.025,
+      "price_configuration": "1024x1024"
+    },
+    {
+      "name": "Qwen-Image-Edit-2511",
+      "creator": "Alibaba",
+      "air": "alibaba:qwen-image-edit@2511",
+      "category": "checkpoint",
+      "type": "base",
+      "architecture": "qwen_image_edit_plus",
+      "tags": [
+        "qwen-image-edit",
+        "image-to-image",
+        "image-editing",
+        "reference-to-image",
+        "semantic-editing",
+        "appearance-editing",
+        "multi-person",
+        "character-consistency",
+        "alibaba",
+        "high-fidelity"
+      ]
+    },
+    {
+      "name": "Object Eraser",
+      "creator": null,
+      "air": "runware:300@1",
+      "category": "checkpoint",
+      "type": "inpainting",
+      "architecture": "object_eraser",
+      "tags": [
+        "object-removal",
+        "inpainting",
+        "image-editing",
+        "erase-objects",
+        "background-cleanup",
+        "photo-retouching",
+        "content-aware-fill",
+        "mask-guided",
+        "segmentation-mask",
+        "prompt-guided",
+        "generative-fill",
+        "restoration",
+        "cleanup-tool",
+        "product-photos",
+        "ecommerce",
+        "creators",
+        "workflow",
+        "image-to-image"
+      ]
+    },
+    {
+      "name": "Riverflow 2.0 Pro",
+      "creator": "Sourceful",
+      "air": "sourceful:riverflow-2.0@pro",
+      "category": "checkpoint",
+      "type": "base",
+      "architecture": "riverflow_2_0_pro",
+      "tags": [
+        "riverflow",
+        "riverflow-2.0",
+        "pro",
+        "image-generation",
+        "image-editing",
+        "reference-based",
+        "super-resolution",
+        "font-control",
+        "product-accuracy",
+        "commercial",
+        "sourceful"
+      ]
+    },
+    {
+      "name": "GPT Image 1.5",
+      "creator": "OpenAI",
+      "air": "openai:4@1",
+      "category": "checkpoint",
+      "type": "base",
+      "architecture": "gpt_image_1_5",
+      "tags": [
+        "OpenAI",
+        "GPT Image",
+        "Partner",
+        "Fast",
+        "image-generation"
+      ],
+      "price_usd": 0.009,
+      "price_configuration": "1024x1024 · Low quality"
+    },
+    {
+      "name": "Midjourney V7",
+      "creator": "Midjourney",
+      "air": "midjourney:3@1",
+      "category": "checkpoint",
+      "type": "base",
+      "architecture": "midjourney_v7",
+      "tags": [
+        "midjourney",
+        "image-generation",
+        "cinematic",
+        "realism",
+        "vivid",
+        "depth"
+      ],
+      "price_usd": 0.045,
+      "price_configuration": "1024x1024"
+    },
+    {
+      "name": "ImagineArt 1.5",
+      "creator": "ImagineArt",
+      "air": "imagineart:1@5",
+      "category": "checkpoint",
+      "type": "base",
+      "architecture": "imagineart_1_5",
+      "tags": [
+        "imagineart",
+        "image-generation",
+        "realism",
+        "text-rendering",
+        "multi-image",
+        "commercial"
+      ],
+      "price_usd": 0.035,
+      "price_configuration": "1024x1024"
+    },
+    {
+      "name": "FLUX.2 [max]",
+      "creator": "Black Forest Labs",
+      "air": "bfl:7@1",
+      "category": "checkpoint",
+      "type": "base",
+      "architecture": "flux_2_max",
+      "tags": [
+        "bfl",
+        "flux",
+        "image-generation",
+        "image-editing",
+        "text-to-image",
+        "professional"
+      ],
+      "price_usd": 0.07,
+      "price_configuration": "1024x1024"
+    },
+    {
+      "name": "Midjourney V6",
+      "creator": "Midjourney",
+      "air": "midjourney:1@1",
+      "category": "checkpoint",
+      "type": "base",
+      "architecture": "midjourney_v6",
+      "tags": [
+        "midjourney",
+        "image-generation",
+        "cinematic",
+        "stylized",
+        "motion",
+        "hdr"
+      ],
+      "price_usd": 0.04,
+      "price_configuration": "1024x1024"
+    },
+    {
+      "name": "Bria FIBO Edit",
+      "creator": "Bria",
+      "air": "bria:21@1",
+      "category": "checkpoint",
+      "type": "base",
+      "architecture": "bria_fibo_edit",
+      "tags": [
+        "bria",
+        "fibo-edit",
+        "image-to-image",
+        "image-editing",
+        "reference-to-image",
+        "mask-based-editing",
+        "inpainting",
+        "outpainting",
+        "background-replacement",
+        "precision-editing"
+      ],
+      "price_usd": 0.04,
+      "price_configuration": "1024x1024"
+    }
+  ]
+}

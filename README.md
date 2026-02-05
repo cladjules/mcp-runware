@@ -188,24 +188,32 @@ Generate an image from a text prompt.
 }
 ```
 
-### get_popular_models
+### get_models
 
-Get a list of popular AI models available on Runware with descriptions.
+Get a comprehensive list of AI models available on Runware with their AIR identifiers, pricing, and descriptions. Models are automatically sorted by price (cheapest first).
 
 **No parameters required**
 
 **Returns:**
 
-A formatted list of popular models including:
+A formatted list of all available models including:
 
-- **FLUX.1 [dev]** (`runware:101@1`) - High-quality FLUX model with excellent detail
-- **FLUX.1 [schnell]** (`runware:97@2`) - Ultra-fast distilled FLUX (4-8 steps)
-- **FLUX.2 [dev]** (`runware:102@1`) - Next-generation FLUX with improved quality
-- **HiDream-I1 Dev** (`runware:103@1`) - Transformer-based with exceptional photorealism
-- **Juggernaut XL** (`civitai:133005@782002`) - SDXL-based photorealistic model
-- **Dreamshaper** (`civitai:102438@133677`) - SD 1.5 artistic model
+- Model name and AIR identifier
+- Pricing information (USD per generation)
+- Configuration details (resolution, steps, etc.)
+- Discount information where applicable
+- Model category and tags
 
-Find more models at: https://my.runware.ai/models/all
+The tool merges data from both popular models and specialized collections, providing up to 44+ unique models sorted by cost-effectiveness.
+
+**Example output:**
+
+- **FLUX.2 [klein] 4B** (`runware:400@4`) - $0.0006 (1024x1024) [Save 40%]
+- **Z-Image-Turbo** (`runware:z-image@turbo`) - $0.0006 (1024x1024 · 4 steps)
+- **FLUX.2 [klein] 9B** (`runware:400@2`) - $0.00078 (1024x1024 · 4 steps) [Save 87%]
+- **Qwen-Image-2512** (`alibaba:qwen-image@2512`) - $0.0051 (1024x1024) [Save 74%]
+
+All pricing and model data is automatically updated when running `npm run fetch-models`.
 
 ## Project Structure
 
@@ -217,6 +225,12 @@ mcp-runware/
 │   ├── utils.ts              # Shared utilities (server factory, auth, transport factory)
 │   ├── tools.ts              # MCP tool definitions
 │   ├── runware-client.ts     # Runware SDK wrapper
+│   └── data/                 # Model and pricing data
+│       ├── popular_models.json    # Popular models with AIR & pricing
+│       ├── best_models.json       # Best text-on-images models
+│       └── pricing.json           # Pricing data source
+├── scripts/
+│   └── fetch_curated_models.py    # Model data fetcher/enricher
 ├── api/
 │   └── index.ts              # Vercel serverless function
 ├── dist/                     # Compiled JavaScript (generated)
@@ -260,8 +274,42 @@ Start the MCP server:
 npm start
 ```
 
-Or build and run in one command:
+Or build and run in one command:with pricing information, automatically scraped and enriched from Runware. To refresh these lists:
 
-```bash
-npm run dev
-```
+1. **Install Python dependencies** (one-time setup):
+
+   ```bash
+   pip3 install requests python-dotenv
+   ```
+
+2. **Run the fetch script**:
+   ```bash
+   npm run fetch-models
+   ```
+
+This will:
+
+- Scrape model IDs and names from Runware collection pages
+- Fetch AIR identifiers and metadata from the Runware API
+- Merge pricing data from `src/data/pricing.json`
+- Filter out models without AIR identifiers
+- Save enriched data to JSON files in `src/data/`
+
+**Data sources:**
+
+- Popular Models → `src/data/popular_models.json` (manually curated from https://runware.ai/models)
+- Best Models → `src/data/best_models.json` (scraped from https://runware.ai/collections/best-for-text-on-images)
+- Pricing Data → `src/data/pricing.json` (extracted from https://runware.ai/pricing)
+
+The `get_models` tool automatically merges these sources and sorts by price.
+
+To modify the model collections, edit the `POPULAR_MODELS` and `SCRAPE_COLLECTIONS` arrays API
+
+- Save enriched data to JSON files in `src/data/`
+
+**Collections fetched:**
+
+- Popular Models → `src/data/popular_models.json` (from https://runware.ai/models)
+- Best Models → `src/data/best_models.json` (from https://runware.ai/collections/best-for-text-on-images)
+
+To add more collections, edit the `COLLECTIONS` array in `scripts/fetch_curated_models.py`.

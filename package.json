@@ -8,12 +8,13 @@
     "mcp-runware": "dist/index.js"
   },
   "scripts": {
-    "build": "tsc",
+    "build": "tsc && cp -r src/data dist/",
     "watch": "tsc --watch",
     "start": "node dist/index.js",
     "dev": "tsc && node dist/index.js",
     "inspect": "npx @modelcontextprotocol/inspector",
-    "start:http": "MCP_TRANSPORT=http node dist/index.js"
+    "start:http": "MCP_TRANSPORT=http node dist/index.js",
+    "fetch-models": "python3 scripts/fetch_curated_models.py"
   },
   "keywords": [
     "mcp",

@@ -1,0 +1,324 @@
+{
+  "source": "https://runware.ai/pricing",
+  "date_extracted": "2026-02-05",
+  "note": "Pricing varies by configuration (resolution, steps, quality). Shown prices are for default configurations.",
+  "total_models": 50,
+  "models": [
+    {
+      "name": "Vidu Q3",
+      "price_usd": 0.0455,
+      "configuration": "360p · 1s",
+      "discount": "Save 35%",
+      "date_added": "30 Jan 2026"
+    },
+    {
+      "name": "PixVerse v5.6",
+      "price_usd": 0.2357,
+      "configuration": "360p · 5s (audio)",
+      "discount": "Save 47%",
+      "date_added": "26 Jan 2026"
+    },
+    {
+      "name": "FLUX.2 [klein] 9B",
+      "price_usd": 0.00078,
+      "configuration": "1024x1024 · 4 steps",
+      "discount": "Save 87%",
+      "date_added": "23 Jan 2026",
+      "note": "Powered by Sonic Inference Engine"
+    },
+    {
+      "name": "Bria FIBO Edit",
+      "price_usd": 0.04,
+      "configuration": "1024x1024",
+      "date_added": "20 Jan 2026"
+    },
+    {
+      "name": "ImagineArt 1.5 Pro",
+      "price_usd": 0.045,
+      "configuration": "4K",
+      "date_added": "15 Jan 2026"
+    },
+    {
+      "name": "FLUX.2 [klein] 4B",
+      "price_usd": 0.0006,
+      "configuration": "1024x1024",
+      "discount": "Save 40%",
+      "date_added": "15 Jan 2026",
+      "note": "Powered by Sonic Inference Engine"
+    },
+    {
+      "name": "FLUX.2 [klein] 9B Base",
+      "price_usd": 0.00416,
+      "configuration": "1024x1024",
+      "discount": "Save 62%",
+      "date_added": "15 Jan 2026",
+      "note": "Powered by Sonic Inference Engine"
+    },
+    {
+      "name": "FLUX.2 [klein] 4B Base",
+      "price_usd": 0.0019,
+      "configuration": "1024x1024",
+      "discount": "Save 78%",
+      "date_added": "15 Jan 2026",
+      "note": "Powered by Sonic Inference Engine"
+    },
+    {
+      "name": "Wan2.6 Flash",
+      "price_usd": 0.21,
+      "original_price_usd": 0.25,
+      "configuration": "720p · 5s",
+      "discount": "15% OFF",
+      "date_added": "15 Jan 2026"
+    },
+    {
+      "name": "LTX-2",
+      "price_usd": 0.15,
+      "configuration": "5 seconds",
+      "date_added": "5 Jan 2026"
+    },
+    {
+      "name": "Z-Image-Turbo",
+      "price_usd": 0.0006,
+      "configuration": "1024x1024 · 4 steps",
+      "date_added": "29 Dec 2025"
+    },
+    {
+      "name": "Qwen-Image-2512",
+      "price_usd": 0.0051,
+      "configuration": "1024x1024",
+      "discount": "Save 74%",
+      "date_added": "25 Dec 2025"
+    },
+    {
+      "name": "Seedance 1.5 Pro",
+      "price_usd": 0.06,
+      "configuration": "480p · 5s · No audio",
+      "date_added": "23 Dec 2025"
+    },
+    {
+      "name": "Qwen-Image-Layered",
+      "price_usd": 0.0141,
+      "discount": "Save 71%",
+      "date_added": "19 Dec 2025"
+    },
+    {
+      "name": "Bria Video Eraser",
+      "price_usd": 0.14,
+      "configuration": "720p · Per second",
+      "date_added": "19 Dec 2025"
+    },
+    {
+      "name": "GPT Image 1.5",
+      "price_usd": 0.009,
+      "configuration": "1024x1024 · Low quality",
+      "date_added": "16 Dec 2025"
+    },
+    {
+      "name": "Wan2.6 Image",
+      "price_usd": 0.03,
+      "configuration": "1024x1024",
+      "date_added": "16 Dec 2025"
+    },
+    {
+      "name": "FLUX.2 [max]",
+      "price_usd": 0.07,
+      "configuration": "1024x1024",
+      "date_added": "16 Dec 2025"
+    },
+    {
+      "name": "Wan2.6",
+      "price_usd": 0.5,
+      "configuration": "720p · 5s",
+      "date_added": "16 Dec 2025"
+    },
+    {
+      "name": "react-1",
+      "price_usd": 0.1467,
+      "configuration": "Per second of audio",
+      "discount": "Save 12%",
+      "date_added": "12 Dec 2025"
+    },
+    {
+      "name": "Kling VIDEO 2.6 Pro",
+      "price_usd": 0.35,
+      "configuration": "5s (without audio)",
+      "date_added": "11 Dec 2025"
+    },
+    {
+      "name": "KlingAI Avatar 2.0 Pro",
+      "price_usd": 0.087,
+      "configuration": "Cost per second",
+      "date_added": "4 Dec 2025"
+    },
+    {
+      "name": "KlingAI Avatar 2.0 Standard",
+      "price_usd": 0.044,
+      "configuration": "Cost per second",
+      "discount": "Save 21%",
+      "date_added": "4 Dec 2025"
+    },
+    {
+      "name": "Runway Gen-4.5",
+      "price_usd": 0.6,
+      "configuration": "720p · 5s",
+      "date_added": "1 Dec 2025"
+    },
+    {
+      "name": "Kandinsky 5.0 Image Lite",
+      "price_usd": 0.0077,
+      "configuration": "1024x1024",
+      "date_added": "26 Nov 2025",
+      "note": "Powered by Sonic Inference Engine"
+    },
+    {
+      "name": "Seedream 4.5",
+      "price_usd": 0.015,
+      "configuration": "1024x1024",
+      "date_added": "20 Nov 2025"
+    },
+    {
+      "name": "FLUX.2 [dev]",
+      "price_usd": 0.025,
+      "configuration": "1024x1024",
+      "date_added": "15 Nov 2025"
+    },
+    {
+      "name": "Midjourney V7",
+      "price_usd": 0.045,
+      "configuration": "1024x1024",
+      "date_added": "10 Nov 2025"
+    },
+    {
+      "name": "ImagineArt 1.5",
+      "price_usd": 0.035,
+      "configuration": "1024x1024",
+      "date_added": "1 Nov 2025"
+    },
+    {
+      "name": "Qwen-Image-Edit-Plus",
+      "price_usd": 0.012,
+      "configuration": "1024x1024",
+      "date_added": "25 Oct 2025"
+    },
+    {
+      "name": "DALL·E 3",
+      "price_usd": 0.04,
+      "configuration": "1024x1024",
+      "date_added": "15 Oct 2025"
+    },
+    {
+      "name": "Stable Diffusion 3",
+      "price_usd": 0.035,
+      "configuration": "1024x1024",
+      "date_added": "10 Oct 2025"
+    },
+    {
+      "name": "Ideogram 3.0",
+      "price_usd": 0.08,
+      "configuration": "1024x1024",
+      "date_added": "5 Oct 2025"
+    },
+    {
+      "name": "Ideogram 3.0 Edit",
+      "price_usd": 0.09,
+      "configuration": "1024x1024",
+      "date_added": "5 Oct 2025"
+    },
+    {
+      "name": "Midjourney V6",
+      "price_usd": 0.04,
+      "configuration": "1024x1024",
+      "date_added": "1 Oct 2025"
+    },
+    {
+      "name": "GPT Image 1",
+      "price_usd": 0.015,
+      "configuration": "1024x1024",
+      "date_added": "20 Sep 2025"
+    },
+    {
+      "name": "Seedream 3.0",
+      "price_usd": 0.012,
+      "configuration": "1024x1024",
+      "date_added": "15 Sep 2025"
+    },
+    {
+      "name": "HunyuanImage-3.0",
+      "price_usd": 0.018,
+      "configuration": "1024x1024",
+      "date_added": "10 Sep 2025"
+    },
+    {
+      "name": "BRIA 3.2",
+      "price_usd": 0.025,
+      "configuration": "1024x1024",
+      "date_added": "5 Sep 2025"
+    },
+    {
+      "name": "Ideogram 2a",
+      "price_usd": 0.06,
+      "configuration": "1024x1024",
+      "date_added": "1 Sep 2025"
+    },
+    {
+      "name": "Ideogram 2.0",
+      "price_usd": 0.07,
+      "configuration": "1024x1024",
+      "date_added": "25 Aug 2025"
+    },
+    {
+      "name": "Ideogram 2.0 Edit",
+      "price_usd": 0.08,
+      "configuration": "1024x1024",
+      "date_added": "25 Aug 2025"
+    },
+    {
+      "name": "Ideogram 2.0 Reframe",
+      "price_usd": 0.075,
+      "configuration": "1024x1024",
+      "date_added": "25 Aug 2025"
+    },
+    {
+      "name": "FLUX.1 Kontext [max]",
+      "price_usd": 0.055,
+      "configuration": "1024x1024",
+      "date_added": "20 Aug 2025"
+    },
+    {
+      "name": "Qwen-Image",
+      "price_usd": 0.008,
+      "configuration": "1024x1024",
+      "date_added": "15 Aug 2025"
+    },
+    {
+      "name": "Qwen-Image-Edit",
+      "price_usd": 0.01,
+      "configuration": "1024x1024",
+      "date_added": "15 Aug 2025"
+    },
+    {
+      "name": "Reve Image",
+      "price_usd": 0.022,
+      "configuration": "1024x1024",
+      "date_added": "10 Aug 2025"
+    },
+    {
+      "name": "P-Image-Edit 1.0",
+      "price_usd": 0.018,
+      "configuration": "1024x1024",
+      "date_added": "5 Aug 2025"
+    },
+    {
+      "name": "Ideogram 1.0",
+      "price_usd": 0.05,
+      "configuration": "1024x1024",
+      "date_added": "1 Aug 2025"
+    },
+    {
+      "name": "Ideogram 1.0 Remix",
+      "price_usd": 0.055,
+      "configuration": "1024x1024",
+      "date_added": "1 Aug 2025"
+    }
+  ]
+}

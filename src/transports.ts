@@ -15,7 +15,7 @@ import {
 export async function setupStdioTransport(server: McpServer): Promise<void> {
   const transport = new StdioServerTransport();
   await server.connect(transport);
-  console.error("MCP Runware server running on stdio");
+  console.log("MCP Runware server running on stdio");
 }
 
 /**
@@ -98,9 +98,9 @@ export function setupHttpTransport(
     // Check for Last-Event-ID header for resumability
     const lastEventId = req.headers["last-event-id"] as string | undefined;
     if (lastEventId) {
-      console.error(`Client reconnecting with Last-Event-ID: ${lastEventId}`);
+      console.log(`Client reconnecting with Last-Event-ID: ${lastEventId}`);
     } else {
-      console.error(`Establishing new SSE stream for session ${sessionId}`);
+      console.log(`Establishing new SSE stream for session ${sessionId}`);
     }
 
     const transport = transports[sessionId];
@@ -116,7 +116,7 @@ export function setupHttpTransport(
       return;
     }
 
-    console.error(`Terminating session: ${sessionId}`);
+    console.log(`Terminating session: ${sessionId}`);
 
     try {
       const transport = transports[sessionId];
@@ -131,18 +131,15 @@ export function setupHttpTransport(
 
   // Handle server shutdown
   const httpShutdown = async () => {
-    console.error("Shutting down HTTP server...");
+    console.log("Shutting down HTTP server...");
     // Close all active transports
     for (const sessionId in transports) {
       try {
-        console.error(`Closing transport for session ${sessionId}`);
+        console.log(`Closing transport for session ${sessionId}`);
         await transports[sessionId]!.close();
         delete transports[sessionId];
       } catch (error) {
-        console.error(
-          `Error closing transport for session ${sessionId}:`,
-          error,
-        );
+        console.log(`Error closing transport for session ${sessionId}:`, error);
       }
     }
     process.exit(0);
@@ -155,9 +152,9 @@ export function setupHttpTransport(
 
   // Start listening
   app.listen(port, host, () => {
-    console.error(`MCP Runware server running on HTTP`);
-    console.error(`Streamable HTTP endpoint: http://${host}:${port}/mcp`);
-    console.error(`Health check: http://${host}:${port}/health`);
+    console.log(`MCP Runware server running on HTTP`);
+    console.log(`Streamable HTTP endpoint: http://${host}:${port}/mcp`);
+    console.log(`Health check: http://${host}:${port}/health`);
   });
 
   return app;

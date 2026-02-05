@@ -2,6 +2,12 @@ import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
 import type { IRequestImage } from "@runware/sdk-js";
 import type { RunwareClient } from "./runware-client.js";
+import { readFileSync } from "fs";
+import { join, dirname } from "path";
+import { fileURLToPath } from "url";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 /**
  * Registers all available tools with the MCP server
@@ -145,72 +151,101 @@ export function registerTools(
     },
   );
 
-  // Register get_popular_models tool
+  // Register get_models tool
   server.registerTool(
-    "get_popular_models",
+    "get_models",
     {
       description:
-        "Get a list of popular AI models available on Runware with their descriptions",
+        "Get a comprehensive list of AI models available on Runware with their AIR identifiers, pricing, and descriptions. Models are sorted by price (cheapest first).",
       inputSchema: {},
     },
     async () => {
-      const popularModels = [
-        {
-          id: "runware:400@4",
-          name: "FLUX.2 Klein 4B",
-          description:
-            "Compact and efficient FLUX.2 model optimized for speed and quality balance. Default model.",
-        },
-        {
-          id: "runware:101@1",
-          name: "FLUX.1 [dev]",
-          description:
-            "High-quality FLUX model with excellent compositional understanding and detail preservation.",
-        },
-        {
-          id: "runware:97@2",
-          name: "FLUX.1 [schnell]",
-          description:
-            "Ultra-fast distilled FLUX model for rapid generation (4-8 steps). Very cost-effective.",
-        },
-        {
-          id: "runware:102@1",
-          name: "FLUX.2 [dev]",
-          description:
-            "Next-generation FLUX model with improved quality and speed. Latest version.",
-        },
-        {
-          id: "runware:103@1",
-          name: "HiDream-I1 Dev",
-          description:
-            "Transformer-based model with exceptional text understanding and photorealistic results.",
-        },
-        {
-          id: "civitai:133005@782002",
-          name: "Juggernaut XL",
-          description:
-            "SDXL-based model with excellent photorealism and higher resolution capabilities.",
-        },
-        {
-          id: "civitai:102438@133677",
-          name: "Dreamshaper",
-          description:
-            "SD 1.5 model that excels at artistic and creative imagery.",
-        },
-      ];
+      try {
+        // Load model data from JSON files
+        const popularPath = join(__dirname, "data", "popular_models.json");
+        const bestPath = join(__dirname, "data", "best_models.json");
 
-      const modelList = popularModels
-        .map((m) => `- **${m.name}** (\`${m.id}\`): ${m.description}`)
-        .join("\n");
+        const popularData = JSON.parse(readFileSync(popularPath, "utf-8"));
+        const bestData = JSON.parse(readFileSync(bestPath, "utf-8"));
 
-      return {
-        content: [
-          {
-            type: "text",
-            text: `# Popular Runware Models\n\n${modelList}\n\nYou can find more models at https://my.runware.ai/models/all`,
+        // Merge models from both files
+        const allModels = [
+          ...popularData.models.map((m: any) => ({
+            ...m,
+            collection: "Popular Models",
+          })),
+          ...bestData.models.map((m: any) => ({
+            ...m,
+            collection: "Best for Text on Images",
+          })),
+        ];
+
+        // Remove duplicates based on AIR identifier
+        const uniqueModels = Array.from(
+          new Map(allModels.map((m) => [m.air, m])).values(),
+        );
+
+        // Sort by price (cheapest first, models without price at the end)
+        uniqueModels.sort((a, b) => {
+          if (a.price_usd && b.price_usd) {
+            return a.price_usd - b.price_usd;
+          }
+          if (a.price_usd) return -1;
+          if (b.price_usd) return 1;
+          return 0;
+        });
+
+        // Format models for output
+        const formattedModels = uniqueModels
+          .map((m) => {
+            let line = `- **${m.name}** (\`${m.air}\`)`;
+
+            if (m.price_usd) {
+              line += ` - $${m.price_usd}`;
+              if (m.price_configuration) {
+                line += ` (${m.price_configuration})`;
+              }
+              if (m.price_discount) {
+                line += ` [${m.price_discount}]`;
+              }
+            }
+
+            if (m.category) {
+              line += `\n  - Type: ${m.category}`;
+            }
+
+            if (m.tags && m.tags.length > 0) {
+              line += `\n  - Tags: ${m.tags.slice(0, 5).join(", ")}`;
+            }
+
+            return line;
+          })
+          .join("\n\n");
+
+        const header = `# Available Runware Models (${uniqueModels.length} models)
+
+Sorted by price (cheapest first). Prices may vary based on configuration.
+
+`;
+
+        return {
+          content: [
+            {
+              type: "text",
+              text: header + formattedModels,
+            },
+          ],
+          structuredContent: {
+            total_models: uniqueModels.length,
+            models: uniqueModels,
           },
-        ],
-      };
+        };
+      } catch (error) {
+        console.error("Error loading model data:", error);
+        throw new Error(
+          "Failed to load model data. Make sure to run 'npm run fetch-models' first.",
+        );
+      }
     },
   );
 }
