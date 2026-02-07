@@ -88,6 +88,28 @@ export function createAuthChecker() {
 }
 
 /**
+ * Creates and sets up a new transport with session storage and cleanup
+ */
+async function createAndSetupTransport(
+  server: McpServer,
+  transports: TransportStorage,
+): Promise<StreamableHTTPServerTransport> {
+  const transport = createStreamableTransport((newSessionId: string) => {
+    transports[newSessionId] = transport;
+  });
+
+  transport.onclose = () => {
+    const sid = transport.sessionId;
+    if (sid && transports[sid]) {
+      delete transports[sid];
+    }
+  };
+
+  await server.connect(transport);
+  return transport;
+}
+
+/**
  * Handles MCP session management and request routing
  * Shared between HTTP and Vercel transports
  */
@@ -106,41 +128,18 @@ export async function handleMCPSession(
     transport = transports[sessionId];
   } else if (!sessionId && isInitializeRequest(req.body)) {
     // New initialization request - create new transport
-    transport = createStreamableTransport((newSessionId: string) => {
-      // Store transport when session is initialized
-      transports[newSessionId] = transport;
-    });
-
-    // Set up onclose handler to clean up transport
-    transport.onclose = () => {
-      const sid = transport.sessionId;
-      if (sid && transports[sid]) {
-        delete transports[sid];
-      }
-    };
-
-    // Connect the transport to the MCP server
-    await server.connect(transport);
+    transport = await createAndSetupTransport(server, transports);
     await transport.handleRequest(req, res, req.body);
-    return; // Already handled
+    return;
   } else if (sessionId && !transports[sessionId]) {
-    // Session ID provided but not found - likely expired or instance recycled
-    console.error(
-      "MCP request error: Session not found (expired or instance recycled)",
-      {
-        sessionId,
-        bodyMethod: req.body?.method,
-        availableSessions: Object.keys(transports),
-      },
-    );
-    res.status(404).json({
-      jsonrpc: "2.0",
-      error: {
-        code: -32001,
-        message: "Session not found. Please reinitialize.",
-      },
-      id: req.body?.id || null,
+    // Session ID provided but not found - likely serverless instance recycling
+    console.log("Session not found (serverless), creating new session", {
+      oldSessionId: sessionId,
+      bodyMethod: req.body?.method,
     });
+
+    transport = await createAndSetupTransport(server, transports);
+    await transport.handleRequest(req, res, req.body);
     return;
   } else {
     // No session ID and not an initialization request
