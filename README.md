@@ -121,6 +121,10 @@ Your MCP server: `https://your-project.vercel.app/mcp`
 
 Connect with same client code as HTTP mode using your Vercel URL. The server leverages Vercel's experimental Fluid compute to support streaming responses required by MCP.
 
+**Important for Vercel:** The server automatically handles serverless instance recycling. When a session is not found (due to instance cold starts or scaling), it creates a new session automatically rather than returning an error. This ensures seamless operation in Vercel's stateless serverless environment.
+
+**Note:** The build process automatically copies model data files from `src/data/` to `dist/data/`. If you update model data with `npm run fetch-models`, remember to rebuild with `npm run build` or `npm run dev` before deploying.
+
 ## Testing
 
 ### MCP Inspector (Recommended)
