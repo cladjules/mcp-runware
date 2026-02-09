@@ -31,17 +31,16 @@ Create a `.env` file in the project root:
 # Required - Your Runware API key
 RUNWARE_API_KEY=rwk_abc123xyz456
 
-# Optional - Transport mode (stdio|http|vercel)
+# Optional - Transport mode (stdio|http)
 # - stdio: Local Claude Desktop (default)
 # - http: HTTP server for remote connections
-# - vercel: Detection flag for serverless deployment
 MCP_TRANSPORT=stdio
 
 # Optional - HTTP server configuration (http mode only)
 PORT=3000
 HOST=127.0.0.1
 
-# Optional - API key authentication (http/vercel modes)
+# Optional - API key authentication (http mode)
 # Comma-separated list for multiple keys
 MCP_API_KEYS=secret-key-1,secret-key-2
 ```
@@ -51,9 +50,8 @@ MCP_API_KEYS=secret-key-1,secret-key-2
 - **`RUNWARE_API_KEY`** (required): Get from [Runware Dashboard](https://my.runware.ai/signup) → API Keys. Used to authenticate with Runware's image generation API.
 
 - **`MCP_TRANSPORT`**: Controls how the server communicates with clients:
-  - `stdio` - Standard input/output for local Claude Desktop
+  - `stdio` - Standard input/output for local Claude Desktop (default)
   - `http` - HTTP server with `/mcp` endpoint for remote access
-  - `vercel` - Flag for Vercel serverless deployment (set automatically)
 
 - **`PORT`** / **`HOST`**: HTTP server binding (default: `3000` / `127.0.0.1`). Only used when `MCP_TRANSPORT=http`.
 
@@ -112,7 +110,6 @@ const transport = new StreamableHTTPClientTransport(
 
 1. **Connect repo to Vercel** - Import your Git repository
 2. **Set environment variables** in Vercel dashboard:
-   - `MCP_TRANSPORT` - vercel (required)
    - `RUNWARE_API_KEY` - Your Runware API key (required)
    - `MCP_API_KEYS` - Authentication keys, comma-separated (recommended)
 3. **Deploy** - Vercel auto-detects configuration from `vercel.json` with Fluid enabled
@@ -123,7 +120,7 @@ Connect with same client code as HTTP mode using your Vercel URL. The server lev
 
 **Important Notes:**
 
-- **Session Management**: Vercel's serverless functions are stateless. If a client receives a "Session not found" error, it should reinitialize by sending a new `initialize` request.
+- **Session Management**: Vercel's serverless functions are stateless. Each session creates its own MCP server instance. If a client receives a "Session not found" error, it should reinitialize by sending a new `initialize` request with the same `mcp-session-id` header to recreate the session.
 - **Model Data**: The build process automatically copies model data from `src/data/` to `dist/data/`. After updating models with `npm run fetch-models`, rebuild before deploying.
 - **Cold Starts**: Initial requests may be slower due to serverless cold starts. Subsequent requests within the same instance are faster.
 

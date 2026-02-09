@@ -48,14 +48,6 @@ process.on("SIGTERM", async () => {
 async function main() {
   const transportMode = process.env.MCP_TRANSPORT || "stdio";
 
-  if (transportMode === "vercel") {
-    // Vercel serverless mode - export handler instead of starting server
-    console.error(
-      "Vercel mode detected - use api/index.ts for serverless deployment",
-    );
-    return;
-  }
-
   if (transportMode === "http") {
     // HTTP Streamable transport mode
     const PORT = parseInt(process.env.PORT || "3000", 10);
