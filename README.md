@@ -112,6 +112,7 @@ const transport = new StreamableHTTPClientTransport(
 
 1. **Connect repo to Vercel** - Import your Git repository
 2. **Set environment variables** in Vercel dashboard:
+   - `MCP_TRANSPORT` - vercel (required)
    - `RUNWARE_API_KEY` - Your Runware API key (required)
    - `MCP_API_KEYS` - Authentication keys, comma-separated (recommended)
 3. **Deploy** - Vercel auto-detects configuration from `vercel.json` with Fluid enabled
