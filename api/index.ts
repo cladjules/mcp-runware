@@ -18,20 +18,17 @@ const RUNWARE_API_KEY = process.env.RUNWARE_API_KEY;
 
 // Initialize Runware client (singleton) - only if API key exists
 let runwareClient: RunwareClient | null = null;
-let server: McpServer | null = null;
 
 if (RUNWARE_API_KEY) {
   runwareClient = new RunwareClient({
     apiKey: RUNWARE_API_KEY,
   });
-
-  // Create MCP server (singleton)
-  server = createMCPServer();
-  registerTools(server, runwareClient);
 }
 
-// Map to store transports by session ID
+// Map to store transports AND servers by session ID
+// In serverless mode, each session needs its own server instance
 const transports = createTransportStorage();
+const servers: { [sessionId: string]: McpServer } = {};
 
 // Create auth checker (singleton)
 const auth = createAuthChecker();
@@ -47,7 +44,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     // From here on, only POST requests
     // Check if server is initialized
-    if (!RUNWARE_API_KEY || !server || !runwareClient) {
+    if (!RUNWARE_API_KEY || !runwareClient) {
       res.status(500).json({
         error: "Server not initialized",
         message: "RUNWARE_API_KEY environment variable is required",
@@ -74,7 +71,33 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     }
 
     // Handle MCP request with session management
-    await handleMCPSession(req, res, server, transports);
+    // In serverless mode, create/retrieve server per session
+    const sessionId = req.headers["mcp-session-id"] as string | undefined;
+
+    let server: McpServer;
+    if (sessionId && servers[sessionId]) {
+      // Reuse existing server for this session
+      server = servers[sessionId];
+    } else {
+      // Create new server for new session
+      server = createMCPServer();
+      registerTools(server, runwareClient);
+
+      // Store server if this will create a session
+      if (sessionId) {
+        servers[sessionId] = server;
+      }
+    }
+
+    // Clean up server when session closes
+    const onSessionClose = (closedSessionId: string) => {
+      console.log("Cleaning up server for session:", closedSessionId);
+      if (servers[closedSessionId]) {
+        delete servers[closedSessionId];
+      }
+    };
+
+    await handleMCPSession(req, res, server, transports, onSessionClose);
   } catch (error) {
     console.error("Handler error:", error);
     if (!res.headersSent) {

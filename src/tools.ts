@@ -138,6 +138,8 @@ export function registerTools(
           throw new Error("Image generation failed: No images returned");
         }
 
+        console.log("Calling tools finished gen_images");
+
         return {
           content: [{ type: "text", text: JSON.stringify(images) }],
           structuredContent: {

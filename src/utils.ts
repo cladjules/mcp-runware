@@ -49,6 +49,58 @@ export function createStreamableTransport(
 }
 
 /**
+ * Creates and configures a new transport with cleanup handlers
+ * Reduces code duplication for transport setup
+ */
+async function createAndSetupTransport(
+  server: McpServer,
+  transports: TransportStorage,
+  sessionId?: string,
+  onClose?: (sessionId: string) => void,
+): Promise<StreamableHTTPServerTransport> {
+  console.log("createAndSetupTransport: Starting transport creation", {
+    sessionId,
+  });
+
+  const transport = createStreamableTransport((newSessionId: string) => {
+    console.log("Transport session initialized:", {
+      newSessionId,
+      forcedSessionId: sessionId,
+    });
+    transports[newSessionId] = transport;
+  });
+
+  // Set up onclose handler to clean up transport
+  transport.onclose = () => {
+    const sid = transport.sessionId;
+    console.log("Transport closing:", { sessionId: sid });
+    if (sid && transports[sid]) {
+      delete transports[sid];
+      // Call cleanup callback if provided
+      if (onClose) {
+        onClose(sid);
+      }
+    }
+  };
+
+  // If a specific session ID is requested, force it (for serverless recovery)
+  if (sessionId) {
+    console.log("createAndSetupTransport: Forcing session ID", { sessionId });
+    (transport as any)._sessionId = sessionId;
+    transports[sessionId] = transport;
+  }
+
+  // Connect transport to the shared server instance
+  // StreamableHTTPServerTransport internally creates a new Protocol instance per connection
+  // so multiple transports CAN connect to the same server
+  console.log("createAndSetupTransport: Connecting transport to server");
+  await server.connect(transport);
+  console.log("createAndSetupTransport: Transport connected successfully");
+
+  return transport;
+}
+
+/**
  * Shared API key authentication checker
  */
 export function createAuthChecker() {
@@ -96,48 +148,65 @@ export async function handleMCPSession(
   res: any,
   server: McpServer,
   transports: TransportStorage,
+  onSessionClose?: (sessionId: string) => void,
 ): Promise<void> {
   const sessionId = req.headers["mcp-session-id"] as string | undefined;
+  const method = req.body?.method;
+
+  // Log all incoming requests for debugging
+  console.log("MCP request received:", {
+    sessionId,
+    method,
+    hasBody: !!req.body,
+    bodyKeys: req.body ? Object.keys(req.body) : [],
+    headers: {
+      "content-type": req.headers["content-type"],
+      "mcp-session-id": sessionId,
+    },
+  });
 
   let transport: StreamableHTTPServerTransport;
 
   if (sessionId && transports[sessionId]) {
     // Reuse existing transport for this session
+    console.log(`Reusing existing session: ${sessionId}`);
     transport = transports[sessionId];
-  } else if (!sessionId && isInitializeRequest(req.body)) {
-    // New initialization request - create new transport
-    transport = createStreamableTransport((newSessionId: string) => {
-      // Store transport when session is initialized
-      transports[newSessionId] = transport;
-    });
-
-    // Set up onclose handler to clean up transport
-    transport.onclose = () => {
-      const sid = transport.sessionId;
-      if (sid && transports[sid]) {
-        delete transports[sid];
-      }
-    };
-
-    // Connect the transport to the MCP server
-    await server.connect(transport);
-    await transport.handleRequest(req, res, req.body);
-    return; // Already handled
+  } else if (isInitializeRequest(req.body)) {
+    // Initialize request - create new transport (with or without session ID)
+    if (sessionId) {
+      console.log(
+        `Creating new session with requested ID: ${sessionId} (serverless recovery)`,
+      );
+      // Client wants to recreate session with specific ID (serverless recovery)
+      transport = await createAndSetupTransport(
+        server,
+        transports,
+        sessionId,
+        onSessionClose,
+      );
+    } else {
+      console.log("Creating new session (initialize request)");
+      transport = await createAndSetupTransport(
+        server,
+        transports,
+        undefined,
+        onSessionClose,
+      );
+    }
   } else if (sessionId && !transports[sessionId]) {
     // Session ID provided but not found - likely expired or instance recycled
-    console.error(
-      "MCP request error: Session not found (expired or instance recycled)",
-      {
-        sessionId,
-        bodyMethod: req.body?.method,
-        availableSessions: Object.keys(transports),
-      },
-    );
+    // Client needs to send initialize request to recreate
+    console.error("404 Session not found (expired or instance recycled)", {
+      requestedSessionId: sessionId,
+      bodyMethod: method,
+      availableSessions: Object.keys(transports),
+    });
     res.status(404).json({
       jsonrpc: "2.0",
       error: {
         code: -32001,
-        message: "Session not found. Please reinitialize.",
+        message:
+          "Session not found. Please send an initialize request with the same mcp-session-id header.",
       },
       id: req.body?.id || null,
     });
@@ -145,10 +214,13 @@ export async function handleMCPSession(
   } else {
     // No session ID and not an initialization request
     console.error(
-      "MCP request error: No session ID provided for non-initialize request",
+      "400 Bad Request: No session ID provided for non-initialize request",
       {
-        bodyMethod: req.body?.method,
+        bodyMethod: method,
         hasBody: !!req.body,
+        isInitializeRequest: isInitializeRequest(req.body),
+        sessionId,
+        body: req.body,
       },
     );
     res.status(400).json({
@@ -163,5 +235,29 @@ export async function handleMCPSession(
   }
 
   // Handle the request with existing transport
-  await transport.handleRequest(req, res, req.body);
+  console.log(`Handling request with transport, method: ${method}`);
+
+  try {
+    await transport.handleRequest(req, res, req.body);
+    console.log(`Request completed successfully, method: ${method}`);
+  } catch (error) {
+    console.error("Error in transport.handleRequest:", {
+      method,
+      sessionId,
+      error: error instanceof Error ? error.message : error,
+      stack: error instanceof Error ? error.stack : undefined,
+    });
+
+    // Only send error response if headers haven't been sent
+    if (!res.headersSent) {
+      res.status(500).json({
+        jsonrpc: "2.0",
+        error: {
+          code: -32603,
+          message: "Internal error processing request",
+        },
+        id: req.body?.id || null,
+      });
+    }
+  }
 }

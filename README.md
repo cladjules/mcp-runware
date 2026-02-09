@@ -112,7 +112,6 @@ const transport = new StreamableHTTPClientTransport(
 
 1. **Connect repo to Vercel** - Import your Git repository
 2. **Set environment variables** in Vercel dashboard:
-   - `MCP_TRANSPORT` - `vercel` (required)
    - `RUNWARE_API_KEY` - Your Runware API key (required)
    - `MCP_API_KEYS` - Authentication keys, comma-separated (recommended)
 3. **Deploy** - Vercel auto-detects configuration from `vercel.json` with Fluid enabled
@@ -120,6 +119,12 @@ const transport = new StreamableHTTPClientTransport(
 Your MCP server: `https://your-project.vercel.app/mcp`
 
 Connect with same client code as HTTP mode using your Vercel URL. The server leverages Vercel's experimental Fluid compute to support streaming responses required by MCP.
+
+**Important Notes:**
+
+- **Session Management**: Vercel's serverless functions are stateless. If a client receives a "Session not found" error, it should reinitialize by sending a new `initialize` request.
+- **Model Data**: The build process automatically copies model data from `src/data/` to `dist/data/`. After updating models with `npm run fetch-models`, rebuild before deploying.
+- **Cold Starts**: Initial requests may be slower due to serverless cold starts. Subsequent requests within the same instance are faster.
 
 ## Testing
 
@@ -193,6 +198,48 @@ Generate an image from a text prompt.
 Get a comprehensive list of AI models available on Runware with their AIR identifiers, pricing, and descriptions. Models are automatically sorted by price (cheapest first).
 
 **No parameters required**
+
+**Returns:** A merged, deduplicated list of 44+ models from popular and curated collections.
+
+**Features:**
+
+- Pricing information (USD per image/generation)
+- Model configurations and discounts
+- AIR identifiers for direct usage with `generate_image` tool
+- Combines manually curated popular models and "Best for Text on Images" collection
+- Sorted by price with cheapest models first
+
+**Example Response:**
+
+```json
+[
+  {
+    "name": "Stable Diffusion XL Lightning",
+    "air": "civitai:133005@782002",
+    "description": "Fast SDXL with 4-step generation",
+    "price_usd": 0.001,
+    "configuration": "4-step",
+    "discount": "80% cheaper"
+  },
+  {
+    "name": "FLUX.1 Schnell",
+    "air": "runware:100@1",
+    "description": "Ultra-fast FLUX variant",
+    "price_usd": 0.003,
+    "configuration": "4-step",
+    "discount": "70% cheaper"
+  }
+  // ... more models
+]
+```
+
+**Model Data Management:**
+
+- Model information stored in `src/data/popular_models.json` and `src/data/best_models.json`
+- Pricing data in `src/data/pricing.json`
+- Update models: `npm run fetch-models` (requires `RUNWARE_API_KEY` in `.env`)
+- Build process automatically copies data from `src/data/` to `dist/data/`
+- Rebuild and redeploy after updating model data
 
 **Returns:**
 
