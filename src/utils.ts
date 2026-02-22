@@ -2,8 +2,8 @@ import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/streamableHttp.js";
 import { isInitializeRequest } from "@modelcontextprotocol/sdk/types.js";
 import { randomUUID } from "node:crypto";
-import type { Response } from "express";
-import type { VercelResponse } from "@vercel/node";
+import type { Request, Response } from "express";
+import type { VercelRequest, VercelResponse } from "@vercel/node";
 
 /**
  * Transport storage type
@@ -144,8 +144,8 @@ export function createAuthChecker() {
  * Shared between HTTP and Vercel transports
  */
 export async function handleMCPSession(
-  req: any,
-  res: any,
+  req: Request | VercelRequest,
+  res: Response | VercelResponse,
   server: McpServer,
   transports: TransportStorage,
   onSessionClose?: (sessionId: string) => void,
@@ -173,26 +173,19 @@ export async function handleMCPSession(
     transport = transports[sessionId];
   } else if (isInitializeRequest(req.body)) {
     // Initialize request - create new transport (with or without session ID)
-    if (sessionId) {
-      console.log(
-        `Creating new session with requested ID: ${sessionId} (serverless recovery)`,
-      );
-      // Client wants to recreate session with specific ID (serverless recovery)
-      transport = await createAndSetupTransport(
-        server,
-        transports,
-        sessionId,
-        onSessionClose,
-      );
-    } else {
-      console.log("Creating new session (initialize request)");
-      transport = await createAndSetupTransport(
-        server,
-        transports,
-        undefined,
-        onSessionClose,
-      );
-    }
+    console.log(
+      sessionId
+        ? `Creating new session with requested ID: ${sessionId} (serverless recovery)`
+        : "Creating new session (initialize request)",
+    );
+
+    // Client wants to recreate session with specific ID (serverless recovery)
+    transport = await createAndSetupTransport(
+      server,
+      transports,
+      sessionId,
+      onSessionClose,
+    );
   } else if (sessionId && !transports[sessionId]) {
     // Session ID provided but not found - likely expired or instance recycled
     // Client needs to send initialize request to recreate
