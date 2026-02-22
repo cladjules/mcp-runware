@@ -101,42 +101,21 @@ async function createAndSetupTransport(
 }
 
 /**
- * Shared API key authentication checker
+ * Shared API key checker
  */
-export function createAuthChecker() {
-  const API_KEYS = new Set(
+export function checkAPIKey(apiKey?: string) {
+  const keys = new Set(
     process.env.MCP_API_KEYS?.split(",").map((key) => key.trim()) || [],
   );
+  if (keys.size === 0) {
+    return true; // No auth required if not configured
+  }
 
-  return {
-    apiKeys: API_KEYS,
-    /**
-     * Checks authentication and sends 401 response if invalid
-     * @returns true if authenticated or auth not required, false if unauthorized
-     */
-    checkAndRespond: (
-      apiKey: string | undefined,
-      res: Response | VercelResponse,
-      clientInfo?: string,
-    ): boolean => {
-      if (API_KEYS.size === 0) {
-        return true; // No auth required if not configured
-      }
+  if (!apiKey || !keys.has(apiKey)) {
+    return false;
+  }
 
-      if (!apiKey || !API_KEYS.has(apiKey)) {
-        console.error(
-          `Unauthorized access attempt${clientInfo ? ` from ${clientInfo}` : ""}`,
-        );
-        res.status(401).json({
-          error: "Unauthorized",
-          message: "Invalid or missing API key",
-        });
-        return false;
-      }
-
-      return true;
-    },
-  };
+  return true;
 }
 
 /**

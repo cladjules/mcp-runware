@@ -4,9 +4,9 @@ import type { Express, Request, Response } from "express";
 import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/streamableHttp.js";
 import { createMcpExpressApp } from "@modelcontextprotocol/sdk/server/express.js";
 import {
-  createAuthChecker,
   handleMCPSession,
   createTransportStorage,
+  checkAPIKey,
 } from "./utils.js";
 
 /**
@@ -32,9 +32,6 @@ export function setupHttpTransport(
   // Map to store transports by session ID
   const transports = createTransportStorage();
 
-  // Use shared auth checker
-  const auth = createAuthChecker();
-
   const requireApiKey = (req: Request, res: Response, next: Function) => {
     // Skip auth for health check
     if (req.path === "/health") {
@@ -42,20 +39,21 @@ export function setupHttpTransport(
       return;
     }
 
-    // Check if API keys are configured
-    if (auth.apiKeys.size === 0) {
-      console.warn(
-        "WARNING: No API keys configured. Set MCP_API_KEYS in .env file.",
+    const apiKey = req.headers["x-api-key"] as string;
+    const isValid = checkAPIKey(apiKey);
+
+    if (!isValid) {
+      console.error(
+        `Unauthorized access attempt${req.ip ? ` from ${req.ip}` : ""}`,
       );
-      next();
+      res.status(401).json({
+        error: "Unauthorized",
+        message: "Invalid or missing API key",
+      });
       return;
     }
 
-    const apiKey = req.headers["x-api-key"] as string;
-
-    if (auth.checkAndRespond(apiKey, res, req.ip)) {
-      next();
-    }
+    next();
   };
 
   // Apply authentication to all routes
