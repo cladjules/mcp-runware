@@ -1,4 +1,4 @@
-import type { Request, Response } from "express";
+import type { VercelRequest, VercelResponse } from "@vercel/node";
 import { createMcpHandler } from "mcp-handler";
 import { checkAuth } from "../src/utils.js";
 import { registerTools } from "../src/tools.js";
@@ -21,11 +21,12 @@ const mcpHandler = createMcpHandler((server) =>
   registerTools(server, runwareClient),
 );
 
-const handler = (req: Request, res: Response) => {
+const handler = (req: VercelRequest, res: VercelResponse) => {
   const apiKey = req.headers["x-api-key"] as string;
-  if (checkAuth(apiKey, res, req.ip)) {
+  const ip = req.headers["x-forwarded-for"] as string;
+  if (checkAuth(apiKey, res, ip)) {
     return mcpHandler(req as any);
   }
 };
 
-export { handler as GET, handler as POST };
+export default handler;
