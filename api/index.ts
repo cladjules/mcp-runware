@@ -1,6 +1,6 @@
-import type { AuthInfo } from "@modelcontextprotocol/sdk/server/auth/types.js";
-import { createMcpHandler, withMcpAuth } from "mcp-handler";
-import { checkAPIKey } from "../src/utils.js";
+import type { Request, Response } from "express";
+import { createMcpHandler } from "mcp-handler";
+import { checkAuth } from "../src/utils.js";
 import { registerTools } from "../src/tools.js";
 import { RunwareClient } from "../src/runware-client.js";
 
@@ -17,31 +17,15 @@ const runwareClient = new RunwareClient({
   apiKey: RUNWARE_API_KEY,
 });
 
-const handler = createMcpHandler(
-  (server) => registerTools(server, runwareClient),
-  {},
+const mcpHandler = createMcpHandler((server) =>
+  registerTools(server, runwareClient),
 );
 
-const verifyToken = async (
-  _: Request,
-  bearerToken?: string,
-): Promise<AuthInfo | undefined> => {
-  if (!bearerToken) return undefined;
-
-  const isValid = checkAPIKey(bearerToken);
-  if (!isValid) return undefined;
-
-  return {
-    token: bearerToken,
-    scopes: ["write:all"],
-    clientId: "mcp-runware-client",
-  };
+const handler = (req: Request, res: Response) => {
+  const apiKey = req.headers["x-api-key"] as string;
+  if (checkAuth(apiKey, res, req.ip)) {
+    return mcpHandler(req as any);
+  }
 };
 
-// Wrap handler with authorization
-const authHandler = withMcpAuth(handler, verifyToken, {
-  required: true,
-  requiredScopes: ["write:all"],
-});
-
-export { authHandler as GET, authHandler as POST };
+export { handler as GET, handler as POST };

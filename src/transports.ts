@@ -1,12 +1,11 @@
 import type { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import type { Express, Request, Response } from "express";
-import { StreamableHTTPServerTransport } from "@modelcontextprotocol/sdk/server/streamableHttp.js";
 import { createMcpExpressApp } from "@modelcontextprotocol/sdk/server/express.js";
 import {
   handleMCPSession,
   createTransportStorage,
-  checkAPIKey,
+  checkAuth,
 } from "./utils.js";
 
 /**
@@ -40,20 +39,9 @@ export function setupHttpTransport(
     }
 
     const apiKey = req.headers["x-api-key"] as string;
-    const isValid = checkAPIKey(apiKey);
-
-    if (!isValid) {
-      console.error(
-        `Unauthorized access attempt${req.ip ? ` from ${req.ip}` : ""}`,
-      );
-      res.status(401).json({
-        error: "Unauthorized",
-        message: "Invalid or missing API key",
-      });
-      return;
+    if (checkAuth(apiKey, res, req.ip)) {
+      next();
     }
-
-    next();
   };
 
   // Apply authentication to all routes
