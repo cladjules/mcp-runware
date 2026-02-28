@@ -14,7 +14,8 @@
     "dev": "tsc && cp -r src/data dist/ && node dist/index.js",
     "inspect": "npx @modelcontextprotocol/inspector",
     "start:http": "MCP_TRANSPORT=http node dist/index.js",
-    "fetch-models": "python3 scripts/fetch_curated_models.py"
+    "fetch-models": "python3 scripts/fetch_curated_models.py",
+    "test:simple": "tsx test-simple.ts"
   },
   "keywords": [
     "mcp",

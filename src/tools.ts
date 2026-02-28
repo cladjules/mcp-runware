@@ -74,6 +74,24 @@ export function registerTools(
           .describe(
             "Seed for reproducible results (optional). Use the same seed to generate the same image.",
           ),
+        seedImage: z
+          .string()
+          .optional()
+          .describe(
+            "URL or UUID of an image to use as a seed for image-to-image generation (optional)",
+          ),
+        maskImage: z
+          .string()
+          .optional()
+          .describe(
+            "URL or UUID of a mask image for inpainting/editing specific areas (optional)",
+          ),
+        referenceImages: z
+          .array(z.string())
+          .optional()
+          .describe(
+            "Array of image URLs or UUIDs to use as style/content references (optional)",
+          ),
         numberResults: z
           .number()
           .optional()
@@ -93,7 +111,9 @@ export function registerTools(
         ),
       },
     },
-    async (args: { [key: string]: string | number | boolean | undefined }) => {
+    async (args: {
+      [key: string]: string[] | string | number | boolean | undefined;
+    }) => {
       // Ensure client is connected
       if (!runwareClient.isConnected()) {
         await runwareClient.connect();
@@ -129,6 +149,9 @@ export function registerTools(
         negativePrompt: args.negativePrompt as string | undefined,
         scheduler: args.scheduler as string | undefined,
         seed: args.seed as number | undefined,
+        seedImage: args.seedImage as string | undefined,
+        maskImage: args.maskImage as string | undefined,
+        referenceImages: args.referenceImages as string[] | undefined,
       };
 
       // Generate image
